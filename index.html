@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#1062fe">
+    <title>Romdan Store - Topup Terlengkap</title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inconsolata:wght@500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <style>
+        :root {
+            --primary: #1062fe; --primary-dark: #0043ce; --accent: #00d2ff;
+            --bg-body: #f2f4f8; --surface: #ffffff; --text-main: #111111;
+            --radius-xl: 24px;
+        }
+        body { background-color: var(--bg-body); color: var(--text-main); font-family: 'Plus Jakarta Sans', sans-serif; padding-bottom: 100px; overflow-x: hidden; }
+
+        /* HEADER */
+        .app-header { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); padding: 25px 25px 100px 25px; border-bottom-left-radius: 35px; border-bottom-right-radius: 35px; color: white; box-shadow: 0 10px 30px rgba(16, 98, 254, 0.3); }
+        .brand-title { font-size: 1.8rem; font-weight: 800; margin-bottom: 5px; text-shadow: 0 2px 10px rgba(0,0,0,0.15); }
+
+        /* WALLET */
+        .wallet-card { background: var(--surface); margin: -80px 20px 25px 20px; padding: 25px; border-radius: var(--radius-xl); box-shadow: 0 15px 35px rgba(0,0,0,0.08); position: relative; z-index: 10; }
+        .xp-fill { height: 8px; background: linear-gradient(90deg, var(--primary), var(--accent)); border-radius: 4px; width: 0%; transition: width 1.5s ease; }
+
+        /* BANNER */
+        .banner-carousel { border-radius: 20px; overflow: hidden; box-shadow: 0 8px 20px rgba(0,0,0,0.05); margin-bottom: 25px; }
+        .banner-img { height: 160px; object-fit: cover; width: 100%; }
+
+        /* TAB KATEGORI */
+        .category-scroll {
+            overflow-x: auto; white-space: nowrap; padding-bottom: 10px; margin-bottom: 15px;
+            -webkit-overflow-scrolling: touch; scrollbar-width: none;
+        }
+        .category-scroll::-webkit-scrollbar { display: none; }
+        .cat-btn {
+            display: inline-block; padding: 10px 25px; margin-right: 10px; border-radius: 50px;
+            background: white; border: 1px solid #e0e0e0; color: #555;
+            font-size: 0.85rem; font-weight: 700; transition: 0.3s; cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.03);
+        }
+        .cat-btn.active {
+            background: var(--primary); color: white; border-color: var(--primary);
+            box-shadow: 0 5px 15px rgba(16, 98, 254, 0.3); transform: translateY(-2px);
+        }
+
+        /* GRID MENU */
+        .menu-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; padding: 0 20px; }
+        .menu-item { text-align: center; cursor: pointer; transition: 0.2s; margin-bottom: 10px; }
+        .menu-item:active { transform: scale(0.9); opacity: 0.8; }
+        .icon-box { width: 58px; height: 58px; background: var(--surface); border-radius: 18px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(0,0,0,0.05); margin: 0 auto 8px auto; padding: 10px; }
+        .icon-box img { width: 100%; height: 100%; object-fit: contain; }
+        .menu-label { font-size: 0.7rem; font-weight: 700; color: #444; line-height: 1.2; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+
+        /* MODAL */
+        .modal-content { border-radius: 25px; border: none; background: #f8f9fa; }
+        .modal-header { background: white; border-bottom: 1px solid #eee; border-radius: 25px 25px 0 0; padding: 20px; }
+        .input-group-custom { background: white; border: 2px solid #e0e0e0; border-radius: 15px; padding: 8px; display: flex; align-items: center; }
+        .form-control-lg-custom { border: none; background: transparent; font-size: 1.2rem; font-weight: 800; color: #000; padding: 5px 10px; width: 100%; outline: none; }
+        .price-list-container { max-height: 45vh; overflow-y: auto; }
+        .price-option { background: white; border: 1px solid #eee; padding: 15px; border-radius: 15px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
+        .price-option.active { border-color: var(--primary); background: #f0f5ff; box-shadow: 0 4px 15px rgba(16, 98, 254, 0.15); }
+
+        /* NAV ISLAND */
+        .nav-island { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 400px; background: #1a1a1a; border-radius: 50px; padding: 18px 40px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 15px 40px rgba(0,0,0,0.3); z-index: 1000; }
+        .nav-icon { color: #777; font-size: 1.4rem; transition: 0.3s; cursor: pointer; }
+        .nav-icon.active { color: var(--accent); transform: scale(1.15); }
+
+        /* ALERT TOKO TUTUP */
+        #storeClosedAlert {
+            position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 400px;
+            background: #ff4757; color: white; padding: 10px 20px; border-radius: 50px;
+            box-shadow: 0 5px 20px rgba(255, 71, 87, 0.4); text-align: center; font-weight: bold; font-size: 0.9rem;
+            z-index: 999; display: none; animation: slideUp 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        @keyframes slideUp { from { bottom: -100px; } to { bottom: 100px; } }
+
+        /* RECEIPT, GUIDE & ADMIN */
+        .receipt-container { background: white; border-radius: 15px; padding: 20px; position: relative; box-shadow: 0 5px 15px rgba(0,0,0,0.05); border-top: 5px solid var(--primary); }
+        .receipt-header { text-align: center; border-bottom: 2px dashed #ddd; padding-bottom: 15px; margin-bottom: 15px; }
+        .receipt-row { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 0.9rem; }
+        .receipt-font { font-family: 'Inconsolata', monospace; }
+        .status-badge { background: #e6fffa; color: #00b894; padding: 5px 10px; border-radius: 5px; font-weight: bold; font-size: 0.8rem; }
+        
+        #adminOverlay { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:#111; z-index:9999; padding:20px; overflow-y:auto; color:white; }
+        .toggle-switch { position: relative; display: inline-block; width: 60px; height: 34px; }
+        .toggle-switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 34px; }
+        .slider:before { position: absolute; content: ""; height: 26px; width: 26px; left: 4px; bottom: 4px; background-color: white; transition: .4s; border-radius: 50%; }
+        input:checked + .slider { background-color: #2196F3; }
+        input:checked + .slider:before { transform: translateX(26px); }
+
+        /* STEP GUIDE */
+        .step-item { display: flex; margin-bottom: 15px; align-items: flex-start; }
+        .step-num { min-width: 30px; height: 30px; background: var(--primary); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; margin-right: 15px; }
+    </style>
+</head>
+<body>
+
+    <audio id="sfxClick" src="https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.m4a"></audio>
+
+    <div id="storeClosedAlert"><i class="fas fa-lock me-2"></i>MAAF, TOKO SEDANG TUTUP</div>
+
+    <div class="app-header">
+        <div class="d-flex justify-content-between align-items-start">
+            <div><h1 class="brand-title">Romdan Store</h1><p class="m-0 opacity-75 small fw-semibold"><i class="fas fa-check-circle me-1"></i>Official & Trusted</p></div>
+            <div class="d-flex gap-3 align-items-center" id="secretTrigger" style="cursor: pointer;">
+                <div class="bg-white bg-opacity-20 rounded-circle p-2"><i class="fas fa-bell text-white animate__animated animate__swing animate__infinite animate__slower"></i></div>
+                <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" width="45" class="rounded-circle border border-3 border-white shadow-sm">
+            </div>
+        </div>
+    </div>
+
+    <div id="mainPage">
+        <div class="wallet-card animate__animated animate__fadeInUp">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2 class="fw-bold text-dark m-0" style="font-size: 2.2rem;">Rp <span id="userSaldo">0</span></h2>
+                <span class="badge bg-primary py-2 px-3 rounded-pill fw-bold" id="rankName">MEMBER</span>
+            </div>
+            <div class="d-flex justify-content-between small fw-bold text-secondary mb-2">
+                <span><i class="fas fa-trophy text-warning me-1"></i> XP Progress</span>
+                <span id="xpText">0 / 1000</span>
+            </div>
+            <div class="progress bg-light" style="height: 10px; border-radius: 5px;">
+                <div class="xp-fill" id="xpFill"></div>
+            </div>
+        </div>
+
+        <div class="container">
+            <div id="bannerCarousel" class="carousel slide banner-carousel" data-bs-ride="carousel">
+                <div class="carousel-inner">
+                    <div class="carousel-item active" data-bs-interval="3000"><img src="assets/img/Banner1.jpg" class="banner-img"></div>
+                    <div class="carousel-item" data-bs-interval="3000"><img src="assets/img/Banner2.jpg" class="banner-img"></div>
+                    <div class="carousel-item" data-bs-interval="3000"><img src="assets/img/Banner3.jpg" class="banner-img"></div>
+                </div>
+            </div>
+
+            <div class="bg-white p-3 rounded-4 shadow-sm d-flex align-items-center gap-3 mb-4">
+                <div class="bg-primary bg-opacity-10 p-2 rounded-circle text-primary"><i class="fas fa-bullhorn"></i></div>
+                <marquee id="runningText" class="fw-bold text-dark small">Selamat datang di Romdan Store! Pusat topup game, pulsa & PPOB termurah.</marquee>
+            </div>
+
+            <div class="d-flex justify-content-between align-items-center px-2 mb-3">
+                <h6 class="fw-bolder text-secondary m-0">PILIH KATEGORI</h6>
+                <button class="btn btn-sm btn-outline-primary rounded-pill fw-bold" data-bs-toggle="modal" data-bs-target="#modalGuide">
+                    <i class="fas fa-info-circle me-1"></i>Cara Order
+                </button>
+            </div>
+            
+            <div class="category-scroll px-2">
+                <div class="cat-btn active" onclick="filterCategory('all', this)">SEMUA</div>
+                <div class="cat-btn" onclick="filterCategory('pulsa', this)">PULSA & DATA</div>
+                <div class="cat-btn" onclick="filterCategory('game', this)">GAMES</div>
+                <div class="cat-btn" onclick="filterCategory('ewallet', this)">E-WALLET</div>
+                <div class="cat-btn" onclick="filterCategory('tagihan', this)">TAGIHAN</div>
+                <div class="cat-btn" onclick="filterCategory('voucher', this)">VOUCHER</div>
+            </div>
+        </div>
+
+        <div class="menu-grid" id="prodContainer"></div>
+        <div style="height: 120px;"></div>
+    </div>
+
+    <div id="historyPage" class="d-none container mt-5 pt-4">
+        <h3 class="fw-bold mb-4 px-2">Riwayat Transaksi</h3>
+        <div id="historyList" class="d-grid gap-3 pb-5"></div>
+        <div style="height: 100px;"></div>
+    </div>
+
+    <div class="nav-island">
+        <i class="fas fa-home nav-icon active" onclick="switchPage('home', this)"></i>
+        <i class="fas fa-receipt nav-icon" onclick="switchPage('history', this)"></i>
+        <i class="fas fa-user-astronaut nav-icon" onclick="Swal.fire('Info','Fitur Member segera hadir!','info')"></i>
+    </div>
+
+    <div class="modal fade" id="modalGuide" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header border-0 pb-0">
+                    <h5 class="modal-title fw-bold">Panduan Pesan</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="step-item">
+                        <div class="step-num">1</div>
+                        <div><h6 class="fw-bold m-0">Pilih Produk</h6><small class="text-secondary">Pilih game atau pulsa yang diinginkan.</small></div>
+                    </div>
+                    <div class="step-item">
+                        <div class="step-num">2</div>
+                        <div><h6 class="fw-bold m-0">Masukkan Data</h6><small class="text-secondary">Input ID Game atau Nomor HP kamu.</small></div>
+                    </div>
+                    <div class="step-item">
+                        <div class="step-num">3</div>
+                        <div><h6 class="fw-bold m-0">Lakukan Pembayaran</h6><small class="text-secondary">Pilih QRIS (Otomatis) atau Transfer Manual.</small></div>
+                    </div>
+                    <div class="step-item">
+                        <div class="step-num">4</div>
+                        <div><h6 class="fw-bold m-0">Konfirmasi WA</h6><small class="text-secondary">Kirim bukti bayar ke WA Admin agar diproses.</small></div>
+                    </div>
+                    <button class="btn btn-primary w-100 rounded-pill fw-bold mt-2" data-bs-dismiss="modal">SIAP, SAYA MENGERTI</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modalCheckout" tabindex="-1" data-bs-backdrop="static">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="d-flex align-items-center gap-3">
+                        <img id="mImg" src="" width="50" class="rounded-4">
+                        <div><h5 class="modal-title fw-bold mb-0 text-dark" id="mTitle">Produk</h5><small class="text-success fw-bold">Online 24 Jam</small></div>
+                    </div>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body pt-4 pb-5">
+                    <form id="formOrder">
+                        <div class="mb-4">
+                            <label class="fw-bold text-dark mb-2 px-1">1. Masukkan ID / Nomor</label>
+                            <div class="input-group-custom">
+                                <span class="ps-3 text-primary fs-4"><i class="fas fa-keyboard"></i></span>
+                                <input type="text" id="inpID" class="form-control-lg-custom" placeholder="Ketik nomor/ID..." required>
+                            </div>
+                        </div>
+                        <div class="mb-4">
+                            <label class="fw-bold text-dark mb-2 px-1">2. Pilih Nominal</label>
+                            <div id="mItems" class="price-list-container"></div>
+                        </div>
+                        <div class="mb-2">
+                            <label class="fw-bold text-dark mb-2 px-1">3. Voucher</label>
+                            <div class="input-group">
+                                <input type="text" id="inpVoucher" class="form-control" placeholder="Kode Promo">
+                                <button type="button" class="btn btn-dark fw-bold" onclick="checkVoucher()">CEK</button>
+                            </div>
+                            <div id="voucherMsg" class="mb-4 fw-bold small px-1 mt-1"></div>
+                        </div>
+                        <input type="hidden" id="finalPrice"><input type="hidden" id="itemName">
+                        <div class="fixed-bottom p-3 bg-white border-top rounded-top-4 shadow-lg" style="position: sticky; bottom: 0; z-index: 1050;">
+                            <div class="d-flex justify-content-between align-items-center mb-3 px-2">
+                                <span class="text-secondary fw-bold">Total Bayar</span>
+                                <span class="fw-bolder fs-4 text-primary" id="displayPrice">Rp 0</span>
+                            </div>
+                            <button type="submit" id="btnPay" class="btn btn-primary w-100 py-3 fw-bolder rounded-pill fs-5 shadow">BAYAR SEKARANG</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modalReceipt" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content" style="background: transparent; box-shadow: none;">
+                <div class="receipt-container animate__animated animate__zoomIn">
+                    <div class="receipt-header"><h4 class="fw-bold mb-1">Romdan Store</h4><small class="text-muted">Jalan Sukses No. 1</small></div>
+                    <div class="receipt-font">
+                        <div class="receipt-row"><span class="text-muted">Tanggal</span><span id="rcptDate"></span></div>
+                        <div class="receipt-row"><span class="text-muted">Order ID</span><span id="rcptRef"></span></div>
+                        <hr style="border-style: dashed; color: #bbb;">
+                        <div class="receipt-row"><span class="fw-bold">Produk</span><span class="fw-bold" id="rcptProd"></span></div>
+                        <div class="receipt-row"><span class="text-muted">Item</span><span id="rcptItem"></span></div>
+                        <div class="receipt-row"><span class="text-muted">Target</span><span id="rcptTarget"></span></div>
+                        <hr style="border-style: dashed; color: #bbb;">
+                        <div class="receipt-row"><span class="fw-bold fs-5">Total</span><span class="fw-bold fs-5 text-primary" id="rcptPrice"></span></div>
+                        <div class="receipt-row mt-3"><span class="text-muted">Status</span><span class="status-badge">MENUNGGU PEMBAYARAN</span></div>
+                    </div>
+                    <div class="mt-4 text-center">
+                        <p class="small text-muted mb-2">Simpan struk ini sebagai bukti pesanan.</p>
+                        <button class="btn btn-dark w-100 rounded-pill mb-2" onclick="location.reload()">Tutup & Pesan Lagi</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="adminOverlay">
+        <div class="d-flex justify-content-between mb-4 border-bottom border-secondary pb-3">
+            <h3 class="fw-bold m-0">ADMIN DASHBOARD</h3> <button class="btn btn-sm btn-outline-danger fw-bold" onclick="toggleAdmin(false)">KELUAR</button>
+        </div>
+        <div class="bg-dark border border-secondary p-4 rounded-4 mb-4 text-center">
+            <h5 class="fw-bold text-white mb-3">STATUS TOKO</h5>
+            <label class="toggle-switch"><input type="checkbox" id="chkStoreStatus" onchange="updateStoreStatus()"><span class="slider"></span></label>
+            <p class="mt-2 text-muted small" id="statusLabel">Sedang Memuat...</p>
+        </div>
+        <div class="row g-3 mb-4">
+             <div class="col-6"><div class="p-4 border border-secondary bg-dark bg-opacity-50 rounded-4 text-center"><h1 id="admTotalOrder" class="text-success fw-bolder m-0">0</h1><small>Transaksi</small></div></div>
+             <div class="col-6"><div class="p-4 border border-secondary bg-dark bg-opacity-50 rounded-4 text-center"><h1 id="admTotalRevenue" class="text-warning fw-bolder m-0">0</h1><small>Omzet</small></div></div>
+        </div>
+        <input type="text" id="inpRunning" class="form-control bg-dark text-white mb-2" placeholder="Update Running Text">
+        <button onclick="saveRunningText()" class="btn btn-success w-100 fw-bold mb-3">SIMPAN</button>
+        <div id="adminOrderList" class="small text-secondary font-monospace">Loading...</div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // --- DATA PRODUK LENGKAP (DENGAN LABEL KATEGORI) ---
+        const PRODUCTS = [
+            // PULSA
+            { cat: 'pulsa', id: 3, name: "Telkomsel", img: "assets/img/Telkomsel.jpg", items: [{n: "Pulsa 5K", p: 6500}, {n: "Pulsa 10K", p: 11500}, {n: "Pulsa 20K", p: 21500}, {n: "Data 2.5GB", p: 15000}] },
+            { cat: 'pulsa', id: 4, name: "Indosat", img: "assets/img/Indosat.png", items: [{n: "Pulsa 5K", p: 6500}, {n: "Pulsa 10K", p: 11500}, {n: "Pulsa 25K", p: 26000}, {n: "Freedom 4GB", p: 20000}] },
+            { cat: 'pulsa', id: 5, name: "XL Axiata", img: "assets/img/Xl.png", items: [{n: "Pulsa 10K", p: 11500}, {n: "Pulsa 25K", p: 26000}, {n: "Xtra Combo 5GB", p: 25000}] },
+            { cat: 'pulsa', id: 16, name: "Tri ", img: "assets/img/Tri.jpg", items: [{n: "Pulsa 5K", p: 6000}, {n: "Pulsa 10K", p: 11000}, {n: "AON 2GB", p: 18000}] },
+            { cat: 'pulsa', id: 17, name: "Axis", img: "https://upload.wikimedia.org/wikipedia/commons/8/83/Axis_logo_2015.svg", items: [{n: "Pulsa 5K", p: 6000}, {n: "Pulsa 10K", p: 11000}, {n: "Bronet 3GB", p: 17000}] },
+            { cat: 'pulsa', id: 18, name: "Smartfren", img: "assets/img/Smart.jpg", items: [{n: "Pulsa 10K", p: 11500}, {n: "Unlimited Harian", p: 20000}] },
+            
+            // E-WALLET
+            { cat: 'ewallet', id: 7, name: "DANA", img: "https://upload.wikimedia.org/wikipedia/commons/7/72/Logo_dana_blue.svg", items: [{n: "Saldo 20K", p: 21000}, {n: "Saldo 50K", p: 51000}, {n: "Saldo 100K", p: 101000}] },
+            { cat: 'ewallet', id: 8, name: "ShopeePay", img: "https://upload.wikimedia.org/wikipedia/commons/f/fe/Shopee.svg", items: [{n: "Saldo 20K", p: 21000}, {n: "Saldo 50K", p: 51000}] },
+            { cat: 'ewallet', id: 9, name: "GoPay", img: "https://upload.wikimedia.org/wikipedia/commons/8/86/Gopay_logo.svg", items: [{n: "Saldo 20K", p: 21000}, {n: "Saldo 50K", p: 51000}] },
+            { cat: 'ewallet', id: 19, name: "OVO", img: "https://upload.wikimedia.org/wikipedia/commons/e/eb/Logo_ovo_purple.svg", items: [{n: "Saldo 20K", p: 21000}, {n: "Saldo 50K", p: 51000}] },
+            { cat: 'ewallet', id: 20, name: "LinkAja", img: "https://upload.wikimedia.org/wikipedia/commons/8/85/LinkAja.svg", items: [{n: "Saldo 20K", p: 21000}, {n: "Saldo 50K", p: 51000}] },
+            { cat: 'ewallet', id: 30, name: "Saldo E-Toll", img: "https://cdn-icons-png.flaticon.com/512/2382/2382449.png", items: [{n: "Isi Saldo 20.000", p: 22500}, {n: "Isi Saldo 50.000", p: 52500}, {n: "Isi Saldo 100.000", p: 102500}] },
+            { cat: 'ewallet', id: 38, name: "Saldo Maxim", img: "assets/img/Mxim.png", items: [{n: "Topup 25.000", p: 27000}, {n: "Topup 50.000", p: 52000}] },
+
+            // GAMES
+            { cat: 'game', id: 1, name: "Mobile Legends", img: "assets/img/Ml.jpg", items: [{n: "86 Diamonds", p: 20000}, {n: "172 Diamonds", p: 40000}, {n: "Weekly Pass", p: 28000}, {n: "Starlight", p: 150000}] },
+            { cat: 'game', id: 2, name: "Free Fire", img: "assets/img/Ff.jpg", items: [{n: "70 DM", p: 10000}, {n: "140 DM", p: 20000}, {n: "355 DM", p: 48000}, {n: "Level Up Pass", p: 15000}] },
+            { cat: 'game', id: 13, name: "PUBG Mobile", img: "assets/img/Pb.jpg", items: [{n: "60 UC", p: 14000}, {n: "325 UC", p: 70000}] },
+            { cat: 'game', id: 21, name: "Roblox", img: "assets/img/Rb.png", items: [{n: "80 Robux", p: 15000}, {n: "400 Robux", p: 75000}] },
+            { cat: 'game', id: 14, name: "Genshin Impact", img: "assets/img/Gensin.jpg", items: [{n: "60 Genesis", p: 15000}, {n: "Welkin Moon", p: 80000}] },
+            { cat: 'game', id: 4, name: "Valorant", img: "https://upload.wikimedia.org/wikipedia/commons/f/fc/Valorant_logo_-_pink_color_version.svg", items: [{n: "125 VP", p: 16000}, {n: "420 VP", p: 52000}] },
+            { cat: 'game', id: 25, name: "Call of Duty", img: "https://cdn-icons-png.flaticon.com/512/2992/2992263.png", items: [{n: "53 CP", p: 11000}, {n: "127 CP", p: 26000}] },
+            { cat: 'game', id: 27, name: "EA FC Mobile", img: "https://cdn-icons-png.flaticon.com/512/5863/5863339.png", items: [{n: "310 Points", p: 33000}, {n: "Star Pass", p: 159000}] },
+            { cat: 'game', id: 32, name: "Wild Rift", img: "assets/img/Bld.png", items: [{n: "420 Cores", p: 65000}, {n: "1350 Cores", p: 200000}] },
+            { cat: 'game', id: 33, name: "Apex Legends", img: "assets/img/Apex.jpg", items: [{n: "280 Gold", p: 45000}, {n: "Syndicate Gold", p: 145000}] },
+            { cat: 'game', id: 34, name: "Hago", img: "assets/img/Hago.png", items: [{n: "45 Diamonds", p: 14000}, {n: "90 Diamonds", p: 27000}] },
+            { cat: 'game', id: 35, name: "Bigo Live", img: "assets/img/Bigo.jpg", items: [{n: "42 Diamonds", p: 15500}, {n: "100 Diamonds", p: 35000}] },
+
+            // TAGIHAN & VOUCHER
+            { cat: 'tagihan', id: 6, name: "Token PLN", img: "https://upload.wikimedia.org/wikipedia/commons/2/20/Logo_PLN.svg", items: [{n: "Token 20K", p: 21500}, {n: "Token 50K", p: 51500}, {n: "Token 100K", p: 101500}] },
+            { cat: 'tagihan', id: 31, name: "Tagihan Air", img: "https://cdn-icons-png.flaticon.com/512/3105/3105807.png", items: [{n: "Cek & Bayar Tagihan", p: 2500}] },
+            { cat: 'tagihan', id: 36, name: "Indihome", img: "assets/img/Indihome.jpg", items: [{n: "Cek & Bayar Tagihan", p: 2500}] },
+            { cat: 'tagihan', id: 37, name: "BPJS", img: "assets/img/Bpjs.jpg", items: [{n: "Bayar Iuran Bulanan", p: 2500}] },
+            { cat: 'tagihan', id: 40, name: "TV Kabel", img: "https://cdn-icons-png.flaticon.com/512/3971/3971932.png", items: [{n: "Paket Cling", p: 10000}, {n: "Paket Gol", p: 45000}] },
+            { cat: 'tagihan', id: 41, name: "Tiket KAI", img: "https://cdn-icons-png.flaticon.com/512/821/821369.png", items: [{n: "Bayar Kode Booking", p: 3500}] },
+            
+            { cat: 'voucher', id: 22, name: "Google Play", img: "https://upload.wikimedia.org/wikipedia/commons/d/d0/Google_Play_Arrow_logo.svg", items: [{n: "Voucher 20K", p: 22000}, {n: "Voucher 50K", p: 55000}] },
+            { cat: 'voucher', id: 23, name: "Netflix", img: "https://cdn-icons-png.flaticon.com/512/5977/5977590.png", items: [{n: "Mobile 1 Bulan", p: 54000}, {n: "Premium 1 Bulan", p: 186000}] },
+            { cat: 'voucher', id: 24, name: "Spotify", img: "https://cdn-icons-png.flaticon.com/512/3669/3669986.png", items: [{n: "Premium 1 Bulan", p: 55000}] },
+            { cat: 'voucher', id: 26, name: "Steam Wallet", img: "https://upload.wikimedia.org/wikipedia/commons/8/83/Steam_icon_logo.svg", items: [{n: "IDR 6K", p: 8500}, {n: "IDR 12K", p: 14500}, {n: "IDR 45K", p: 48000}] },
+            { cat: 'voucher', id: 28, name: "Disney+ Hotstar", img: "https://upload.wikimedia.org/wikipedia/commons/3/3e/Disney%2B_logo.svg", items: [{n: "1 Bulan Basic", p: 39000}, {n: "1 Bulan Premium", p: 69000}] },
+            { cat: 'voucher', id: 29, name: "Vidio", img: "assets/img/Vidio.png", items: [{n: "Platinum 30 Hari", p: 33000}, {n: "Bola 30 Hari", p: 85000}] },
+            { cat: 'voucher', id: 39, name: "Voucher Alfa", img: "https://cdn-icons-png.flaticon.com/512/3081/3081309.png", items: [{n: "Voucher 50K", p: 52000}, {n: "Voucher 100K", p: 102000}] }
+        ];
+
+        // RENDER MENU (DENGAN FILTER)
+        const container = document.getElementById('prodContainer');
+        
+        function renderGrid(data) {
+            container.innerHTML = "";
+            data.forEach(p => {
+                container.innerHTML += `
+                <div class="menu-item animate__animated animate__fadeIn" onclick="openModal(${p.id})">
+                    <div class="icon-box"><img src="${p.img}" loading="lazy"></div>
+                    <div class="menu-label">${p.name}</div>
+                </div>`;
+            });
+        }
+
+        // FUNGSI FILTER KATEGORI
+        window.filterCategory = (cat, btn) => {
+            // Ubah tombol aktif
+            document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+
+            // Filter data
+            if(cat === 'all') {
+                renderGrid(PRODUCTS);
+            } else {
+                const filtered = PRODUCTS.filter(p => p.cat === cat);
+                renderGrid(filtered);
+            }
+        }
+
+        // LOAD AWAL (SEMUA)
+        renderGrid(PRODUCTS);
+
+        // MODAL LOGIC
+        let modal = new bootstrap.Modal(document.getElementById('modalCheckout'));
+        let receiptModal = new bootstrap.Modal(document.getElementById('modalReceipt'));
+        let isStoreOpen = true; 
+        
+        window.openModal = (id) => {
+            if(!isStoreOpen) { Swal.fire({ icon: 'warning', title: 'Toko Sedang Tutup', text: 'Maaf, Admin sedang istirahat/ngaji. Toko akan buka kembali nanti.' }); return; }
+            document.getElementById('sfxClick').play().catch(()=>{});
+            const p = PRODUCTS.find(x => x.id === id);
+            document.getElementById('mImg').src = p.img;
+            document.getElementById('mTitle').innerText = p.name;
+            document.getElementById('inpID').value = "";
+            document.getElementById('inpVoucher').value = "";
+            document.getElementById('displayPrice').innerText = "Rp 0";
+            document.getElementById('voucherMsg').innerText = "";
+            const list = document.getElementById('mItems'); list.innerHTML = "";
+            p.items.forEach(item => {
+                const el = document.createElement('div'); el.className = 'price-option';
+                el.innerHTML = `<div><span class="fw-bold d-block text-dark">${item.n}</span><small class="text-secondary">Instant</small></div><span class="fw-bold text-primary fs-5">Rp ${item.p.toLocaleString()}</span>`;
+                el.onclick = function() {
+                    document.querySelectorAll('.price-option').forEach(x => x.classList.remove('active'));
+                    this.classList.add('active');
+                    document.getElementById('finalPrice').value = item.p;
+                    document.getElementById('itemName').value = item.n;
+                    document.getElementById('displayPrice').innerText = "Rp " + item.p.toLocaleString();
+                }
+                list.appendChild(el);
+            });
+            modal.show();
+        }
+
+        window.checkVoucher = () => {
+            const v = document.getElementById('inpVoucher').value.toUpperCase();
+            document.getElementById('voucherMsg').innerHTML = (v === "ROMDANBERKAH") ? "<span class='text-success'>Diskon sukses!</span>" : "<span class='text-danger'>Kode salah</span>";
+        }
+
+        window.switchPage = (page, btn) => {
+            if(btn) { document.querySelectorAll('.nav-icon').forEach(x => x.classList.remove('active')); btn.classList.add('active'); }
+            document.getElementById('mainPage').classList.toggle('d-none', page !== 'home');
+            document.getElementById('historyPage').classList.toggle('d-none', page !== 'history');
+            if(page === 'history') renderHistory();
+            window.scrollTo(0,0);
+        }
+
+        let xp = parseInt(localStorage.getItem('hyperXP')) || 0;
+        updateXP();
+        function updateXP() {
+            let max = 1000; let rank = "STARTER";
+            if(xp > 5000) { rank = "PRIORITY"; max=10000; } else if(xp > 1000) { rank = "GOLD"; max=5000; }
+            document.getElementById('rankName').innerText = rank;
+            document.getElementById('xpText').innerText = `${xp} / ${max}`;
+            document.getElementById('xpFill').style.width = Math.min((xp/max)*100, 100) + "%";
+        }
+
+        function renderHistory() {
+            const h = JSON.parse(localStorage.getItem('hyperHistory')) || [];
+            const el = document.getElementById('historyList');
+            el.innerHTML = "";
+            if(h.length===0) el.innerHTML = "<div class='text-center text-muted mt-5'>Belum ada transaksi</div>";
+            h.forEach(x => {
+                el.innerHTML += `<div class="card border-0 shadow-sm p-3 rounded-4"><div class="d-flex justify-content-between"><span class="fw-bold">${x.prod}</span><span class="badge bg-success">SUKSES</span></div><div class="small text-secondary mt-1">${x.item}</div><div class="d-flex justify-content-between mt-2"><small>${x.date}</small><span class="fw-bold text-primary">Rp ${x.price.toLocaleString()}</span></div></div>`;
+            });
+        }
+
+        let taps=0; document.getElementById('secretTrigger').addEventListener('click', () => { taps++; if(taps===5) { if(prompt("PIN ADMIN")==="1234") toggleAdmin(true); taps=0; } });
+        window.toggleAdmin = (show) => { document.getElementById('adminOverlay').style.display = show ? 'block' : 'none'; if(show) window.loadAdminRealtime(); }
+        const rt = localStorage.getItem('hyperRun') || "Selamat datang di Romdan Store!";
+        document.getElementById('runningText').innerText = rt; document.getElementById('inpRunning').value = rt;
+        window.saveRunningText = () => { localStorage.setItem('hyperRun', document.getElementById('inpRunning').value); location.reload(); }
+    </script>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+        import { getDatabase, ref, push, set, onValue, query, limitToLast } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
+
+        const firebaseConfig = { apiKey: "AIzaSyAGjaBqDjDZlrV-XNPnjCY_17OKLFBh1d0", authDomain: "tokopulsaku-6c177.firebaseapp.com", databaseURL: "https://tokopulsaku-6c177-default-rtdb.asia-southeast1.firebasedatabase.app", projectId: "tokopulsaku-6c177", storageBucket: "tokopulsaku-6c177.firebasestorage.app", messagingSenderId: "983434713804", appId: "1:983434713804:web:5a0c69a2d937d61c278069" };
+        const MY_WA = "6285960142015";
+        const QRIS_IMG = "assets/img/Qris.jpg";
+
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+
+        const statusRef = ref(db, 'status_toko');
+        onValue(statusRef, (snap) => {
+            const val = snap.val();
+            window.isStoreOpen = (val === null) ? true : val;
+            const alertBox = document.getElementById('storeClosedAlert');
+            if(!window.isStoreOpen) {
+                alertBox.style.display = 'block';
+                const modalEl = document.getElementById('modalCheckout');
+                const modal = bootstrap.Modal.getInstance(modalEl);
+                if (modal) modal.hide();
+            } else {
+                alertBox.style.display = 'none';
+            }
+            document.getElementById('chkStoreStatus').checked = window.isStoreOpen;
+            document.getElementById('statusLabel').innerText = window.isStoreOpen ? "TOKO SEDANG BUKA" : "TOKO SEDANG TUTUP";
+            document.getElementById('statusLabel').className = window.isStoreOpen ? "mt-2 text-success fw-bold" : "mt-2 text-danger fw-bold";
+        });
+
+        window.updateStoreStatus = () => {
+            const isOpen = document.getElementById('chkStoreStatus').checked;
+            set(statusRef, isOpen).then(() => { Swal.fire('Berhasil', isOpen ? 'Toko DIBUKA' : 'Toko DITUTUP', 'success'); });
+        }
+
+        const BANK_INFO = `<div class="text-start bg-light p-3 rounded border text-dark small"><p class="mb-2 border-bottom pb-1"><b>Manual / Cicilan:</b> Bayar Langsung</p><p class="mb-1"><b>BRI:</b> 6542 0103 5265 534</p><p class="mb-1"><b>DANA/GOPAY:</b> 0859-6014-2015</p></div><p class="mt-2 text-danger small fst-italic">*Kirim bukti transfer ke WA.</p>`;
+
+        document.getElementById('formOrder').addEventListener('submit', (e) => {
+            e.preventDefault();
+            if(!window.isStoreOpen) { Swal.fire('Toko Tutup', 'Maaf, toko sedang tutup. Silakan coba lagi nanti.', 'error'); return; }
+            const prod = document.getElementById('mTitle').innerText;
+            const item = document.getElementById('itemName').value;
+            const id = document.getElementById('inpID').value;
+            const price = parseInt(document.getElementById('finalPrice').value);
+            if(!item) { Swal.fire('Oops','Pilih nominal dulu!','warning'); return; }
+
+            const btn = document.getElementById('btnPay');
+            btn.innerHTML = 'MEMPROSES...'; btn.disabled = true;
+
+            const data = { produk: prod, item: item, target: id, harga: price, waktu: new Date().toLocaleString() };
+
+            push(ref(db, 'pesanan'), data).then(() => {
+                let xp = parseInt(localStorage.getItem('hyperXP')) || 0;
+                localStorage.setItem('hyperXP', xp + 150);
+                let h = JSON.parse(localStorage.getItem('hyperHistory')) || [];
+                h.unshift({prod:prod, item:item, price:price, date:data.waktu});
+                localStorage.setItem('hyperHistory', JSON.stringify(h));
+
+                modal.hide();
+
+                document.getElementById('rcptDate').innerText = data.waktu;
+                document.getElementById('rcptRef').innerText = "ORD-" + Math.floor(Math.random()*90000);
+                document.getElementById('rcptProd').innerText = prod;
+                document.getElementById('rcptItem').innerText = item;
+                document.getElementById('rcptTarget').innerText = id;
+                document.getElementById('rcptPrice').innerText = "Rp " + price.toLocaleString();
+
+                Swal.fire({
+                    title: 'Pilih Pembayaran',
+                    html: `<h4 class='text-primary fw-bold'>Rp ${price.toLocaleString()}</h4>`,
+                    icon: 'question', showDenyButton: true, confirmButtonText: 'Scan QRIS', denyButtonText: 'Transfer Manual', confirmButtonColor: '#1062fe', denyButtonColor: '#444'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        Swal.fire({ title: 'SCAN QRIS', imageUrl: QRIS_IMG, imageWidth: 250, confirmButtonText: '✅ KONFIRMASI WA', confirmButtonColor: '#1062fe' }).then((r) => {
+                            if(r.isConfirmed) { kirimWA(prod, item, id, price, 'QRIS'); receiptModal.show(); }
+                        });
+                    } else if (result.isDenied) {
+                        Swal.fire({ title: 'Info Transfer', html: BANK_INFO, confirmButtonText: '✅ KONFIRMASI WA', confirmButtonColor: '#28a745' }).then((r) => {
+                            if(r.isConfirmed) { kirimWA(prod, item, id, price, 'MANUAL TRANSFER'); receiptModal.show(); }
+                        });
+                    } else { receiptModal.show(); } 
+                    btn.innerHTML = 'BAYAR SEKARANG'; btn.disabled = false;
+                });
+            });
+        });
+
+        function kirimWA(p, i, t, h, m) {
+            window.open(`https://wa.me/${MY_WA}?text=Halo Admin, Order Baru!%0A📦 ${p}%0A🏷️ ${i}%0A🆔 ${t}%0A💰 Rp ${h.toLocaleString()}%0A💳 ${m}`, '_blank');
+        }
+
+        window.loadAdminRealtime = () => {
+            const list = document.getElementById('adminOrderList');
+            onValue(query(ref(db, 'pesanan'), limitToLast(20)), (snap) => {
+                list.innerHTML = ""; let c=0, r=0;
+                if(snap.exists()) {
+                    Object.values(snap.val()).reverse().forEach(o => {
+                        c++; r+=(o.harga||0);
+                        list.innerHTML += `<div class="border-bottom border-secondary py-1">${o.produk} - ${o.item} <br> ${o.target} | Rp ${o.harga.toLocaleString()}</div>`;
+                    });
+                }
+                document.getElementById('admTotalOrder').innerText = c;
+                document.getElementById('admTotalRevenue').innerText = (r/1000000).toFixed(2);
+            });
+        }
+    </script>
+</body>
+</html>
